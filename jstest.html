@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<label for="yourname">Enter your name</label>
+<input type="text" required name="yourname" id="yourname">
+<input type="submit" value="Enter name" onclick="showItems()">
+<input type="submit" value="News!" onclick="getNews()">
+<div id="items"></div>
+<script type="text/javascript">
+    var numberofClicks =0;
+    var theResponse;
+
+    function showItems()
+    {
+        numberofClicks++;
+        console.log("You have clicked on this button "+numberofClicks+" time(s)");
+        var paragraph = document.createElement("p");
+        paragraph.appendChild(document.createTextNode("Added a paragraph"));
+        document.getElementById("items").appendChild(paragraph);
+    }
+
+    function showNews(result)
+    {
+        var displayText;
+
+        for(i=0;  i<result.articles.length; i++)
+        {
+          document.write(result.articles[i].title+"<br/>");
+        }
+
+    }
+
+    function getNews()
+    {
+        var HttpObject = new XMLHttpRequest();
+        var url =  "https://newsapi.org/v2/top-headlines?country=us&apiKey=[Your Key]&category=sports&finance";
+        HttpObject.responseType='json'
+        HttpObject.open('GET',url);
+        HttpObject.send();
+
+        HttpObject.onreadystatechange = function(){
+            if(this.readyState==1)
+            {
+                console.log("Connection established");
+            }
+
+            if(this.readyState==3)
+            {
+                console.log("Loading Data")
+            }
+
+            if(this.readyState==4)
+            {
+                console.log("Done");
+
+                if(this.status==200)
+                {
+                    console.log("Result successful. Check your page.");
+                    theResponse  = this.response;
+                    showNews(theResponse);
+                    console.log(theResponse.articles);
+                    // console.log(this.response.articles);
+                }
+                else
+                {
+                    console.log("Something went wrong. Check below for details.");
+                    console.log(this.statusText);
+                }
+            }
+
+
+        }
+
+        return HttpObject.response;
+    }
+
+//    This key is visible - it's better to create a server side app that this can pull from, because nothing is
+//    hidden here.
+//    62c07194bf66473f809ace9da0f6d01d
+
+    // https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=API_KEY
+
+//https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=62c07194bf66473f809ace9da0f6d01d
+
+</script>
+</body>
+</html>
